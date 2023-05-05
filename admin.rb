@@ -3,9 +3,10 @@ require "csv"
 module User
   def self.seeUserData
     data = CSV.read("userdata.csv")
-    data.each do |row|
-      puts "#{row}"
+    data.each_with_index do |row, index|
+      puts "#{index} #{row}"
     end
+    main
   end
 
   def self.deleteUserData
@@ -15,13 +16,18 @@ module User
     end
     puts "Enter the index of the row to be deleted"
     choice = gets.chomp.to_i
-    data.delete_at(choice)
-    CSV.open("userdata.csv", "w") do |csv|
-      data.each do |row|
-        csv << row
-        Choice.if1
+    if (0...data.length).include?(choice)
+      data.delete_at(choice)
+      CSV.open("userdata.csv", "w") do |csv|
+        data.each do |row|
+          csv << row
+        end
       end
+      puts "Data has been deleted successfully."
+    else
+      puts "Invalid index. Please try again."
     end
+    Choice.if1
   end
 
   def self.updateUserData()
@@ -54,9 +60,10 @@ end
 module Seller
   def self.seeSellerData
     data = CSV.read("sellerdata.csv")
-    data.each do |row|
-      puts "#{row}"
+    data.each_with_index do |row, index|
+      puts "#{index + 1} #{row}"
     end
+    Choice.if2
   end
 
   def self.deleteSellerData
@@ -66,13 +73,18 @@ module Seller
     end
     puts "Enter the index of the row to be deleted"
     choice = gets.chomp.to_i
-    data.delete_at(choice)
-    CSV.open("sellerdata.csv", "w") do |csv|
-      data.each do |row|
-        csv << row
-        Choice.if1
+    if (0...data.length).include?(choice)
+      data.delete_at(choice)
+      CSV.open("sellerdata.csv", "w") do |csv|
+        data.each do |row|
+          csv << row
+        end
       end
+      puts "Data has been deleted successfully."
+    else
+      puts "Invalid index. Please try again."
     end
+    Choice.if2
   end
 
   def self.updateSellerData
@@ -105,9 +117,10 @@ end
 
 module Choice
   def self.if1
-    puts "1 See user data"
-    puts "2 Delete user data"
-    puts "3 Update user data"
+    puts "1 See user Detail"
+    puts "2 Delete user Detail"
+    puts "3 Update user Detail"
+    puts "0 Main menu"
     choice = gets.chomp.to_i
     if choice == 1
       User.seeUserData
@@ -115,8 +128,11 @@ module Choice
       User.deleteUserData
     elsif choice == 3
       User.updateUserData()
+    elsif choice == 0
+      main
     else
       puts "Invalid choice"
+      main
     end
   end
 
@@ -124,6 +140,7 @@ module Choice
     puts "1 See seller data"
     puts "2 Delete seller data"
     puts "3 Update seller data"
+    puts "0 Main menu"
     choice = gets.chomp.to_i
     if choice == 1
       Seller.seeSellerData
@@ -131,8 +148,11 @@ module Choice
       Seller.deleteSellerData
     elsif choice == 3
       Seller.updateSellerData()
+    elsif choice == 0
+      main
     else
       puts "Invalid choice"
+      main
     end
   end
 end
