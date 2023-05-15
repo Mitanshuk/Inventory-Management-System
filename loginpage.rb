@@ -2,6 +2,7 @@ $LOAD_PATH << '.'
 require 'csv'
 require 'admin'
 require 'seller'
+require 'user'
 
 $admin_password = "1234"
 
@@ -42,10 +43,9 @@ def main
 
   admin_login
 
-
-
   when 2
     def user_login_account
+      puts "Login Your Account"
       puts "Enter ID"
       id = gets.chomp
       puts "Enter Password"
@@ -55,13 +55,20 @@ def main
       data.each do |row|
         if row[1] == id && row[2] == psd
           puts "Login Successful"
+          BuyPro.productOperation(row)
           match_found = true
           break
         end
       end
       unless match_found
-        puts "Invalid ID/Password"
-        user_login_account
+        $wrong_count += 1
+        if $wrong_count >= 3
+          puts "Limit exceeded"
+          return
+        else
+          puts "Invalid ID/Password"
+          user_login_account
+        end
       end
     end
 
@@ -120,7 +127,6 @@ def main
     elsif choice == 0
       main
   end
-
 
   when 3
     $wrong_count ||= 0
