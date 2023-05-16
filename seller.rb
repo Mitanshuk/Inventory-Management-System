@@ -60,128 +60,130 @@ module Product
       File.open("loginData.csv", "w") do |file|
         main
       end
-    end
-  end
-
-def self.accept
-  data = CSV.read("orders.csv")
-  login = CSV.read("loginData.csv")
-  num = 0
-  temp = []
-
-  data.each_with_index do |row, index|
-    if row[4] == login.first[0] && row.last == "ordered"
-      puts "#{num} #{row.last} #{row[2]} #{row[1]} worths #{row[3]} by #{row[5]}"
-      num += 1
-      temp.push(row.first)
-    end
-  end
-
-  puts "Enter the number of the product you want to accept:"
-  choice = gets.chomp.to_i
-
-  id = temp[choice]
-  product_index = nil
-
-  data.each_with_index do |row, index|
-    if row[0] == id
-      product_index = index
-      break
-    end
-  end
-
-  if product_index
-    status = "confirmed"
-    product_data = [data[product_index][0], data[product_index][1], data[product_index][2], data[product_index][3], data[product_index][4], data[product_index][5], status]
-    puts "#{product_data}"
-
-    CSV.open("orders.csv", "a") do |csv|
-      csv << product_data
-    end
-
-    Product.productOperation(login.first[0])
-  else
-    puts "Invalid Id"
-  end
-end
-
-def self.reject
-  data = CSV.read("orders.csv")
-  login = CSV.read("loginData.csv")
-  num = 0
-  temp = []
-
-  data.each_with_index do |row, index|
-    if row[4] == login.first[0] && row.last == "ordered"
-      puts "#{num} #{row.last} #{row[2]} #{row[1]} worths #{row[3]} by #{row[5]}"
-      num += 1
-      temp.push(row.first)
-    end
-  end
-
-  puts "Enter the number of the product you want to reject:"
-  choice = gets.chomp.to_i
-
-  id = temp[choice]
-  product_index = nil
-
-  data.each_with_index do |row, index|
-    if row[0] == id
-      product_index = index
-      break
-    end
-  end
-
-  if product_index
-    puts "Give a reason:"
-    reason = gets.chomp
-    status = "rejected because of #{reason}"
-    product_data = [data[product_index][0], data[product_index][1], data[product_index][2], data[product_index][3], data[product_index][4], data[product_index][5], status]
-    puts "#{product_data}"
-
-    CSV.open("orders.csv", "a") do |csv|
-      csv << product_data
-    end
-
-    Product.productOperation(login.first[0])
-  else
-    puts "Invalid Id"
-  end
-end
-
-def self.pendingOrders
-  data = CSV.read("orders.csv")
-  login = CSV.read("loginData.csv")
-  found_data = false
-
-  data.each_with_index do |row, index|
-    if row[4] == login.first[0] && row.last == "ordered"
-      if row.last != "confirmed" && row.last != "rejected"
-        puts "#{row.last} #{row[2]} #{row[1]} worths #{row[3]} by #{row[5]}"
-        found_data = true
-      end
-    end
-  end
-
-  if found_data
-    puts "1 Accept"
-      puts "2 Reject"
-      choice = gets.chomp.to_i
-
-      if choice == 1
-        accept
-      elsif choice == 2
-        reject
-      else
-        puts "Invalid Choice"
-        productOperation(data[0])
-      end
     else
-      puts "No Pending Orders"
+      puts "Invalid Choice"
+    end
+  end
+
+  def self.accept
+    data = CSV.read("orders.csv")
+    login = CSV.read("loginData.csv")
+    num = 0
+    temp = []
+
+    data.each_with_index do |row, index|
+      if row[4] == login.first[0] && row.last == "ordered"
+        puts "#{num} #{row.last} #{row[2]} #{row[1]} worths #{row[3]} by #{row[5]}"
+        num += 1
+        temp.push(row.first)
+      end
     end
 
-    productOperation(data[0])
+    puts "Enter the number of the product you want to accept:"
+    choice = gets.chomp.to_i
+
+    id = temp[choice]
+    product_index = nil
+
+    data.each_with_index do |row, index|
+      if row[0] == id
+        product_index = index
+        break
+      end
+    end
+
+    if product_index
+      status = "confirmed"
+      product_data = [data[product_index][0], data[product_index][1], data[product_index][2], data[product_index][3], data[product_index][4], data[product_index][5], status]
+      puts "#{product_data}"
+
+      CSV.open("orders.csv", "a") do |csv|
+        csv << product_data
+      end
+
+      Product.productOperation(login.first[0])
+    else
+      puts "Invalid Id"
+    end
   end
+
+  def self.reject
+    data = CSV.read("orders.csv")
+    login = CSV.read("loginData.csv")
+    num = 0
+    temp = []
+
+    data.each_with_index do |row, index|
+      if row[4] == login.first[0] && row.last == "ordered"
+        puts "#{num} #{row.last} #{row[2]} #{row[1]} worths #{row[3]} by #{row[5]}"
+        num += 1
+        temp.push(row.first)
+      end
+    end
+
+    puts "Enter the number of the product you want to reject:"
+    choice = gets.chomp.to_i
+
+    id = temp[choice]
+    product_index = nil
+
+    data.each_with_index do |row, index|
+      if row[0] == id
+        product_index = index
+        break
+      end
+    end
+
+    if product_index
+      puts "Give a reason:"
+      reason = gets.chomp
+      status = "rejected because of #{reason}"
+      product_data = [data[product_index][0], data[product_index][1], data[product_index][2], data[product_index][3], data[product_index][4], data[product_index][5], status]
+      puts "#{product_data}"
+
+      CSV.open("orders.csv", "a") do |csv|
+        csv << product_data
+      end
+
+      Product.productOperation(login.first[0])
+    else
+      puts "Invalid Id"
+    end
+  end
+
+  def self.pendingOrders
+    data = CSV.read("orders.csv")
+    login = CSV.read("loginData.csv")
+    found_data = false
+
+    data.each_with_index do |row, index|
+      if row[4] == login.first[0] && row.last == "ordered"
+        if row.last != "confirmed" || row.last != "rejected"
+          puts "#{row.last} #{row[2]} #{row[1]} worths #{row[3]} by #{row[5]}"
+          found_data = true
+        end
+      end
+    end
+
+    if found_data
+      puts "1 Accept"
+        puts "2 Reject"
+        choice = gets.chomp.to_i
+
+        if choice == 1
+          accept
+        elsif choice == 2
+          reject
+        else
+          puts "Invalid Choice"
+          productOperation(data[0])
+        end
+      else
+        puts "No Pending Orders"
+      end
+
+      productOperation(data[0])
+    end
 
   def self.updateProduct
     data = CSV.read("product.csv")
